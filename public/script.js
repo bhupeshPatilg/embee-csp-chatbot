@@ -8,7 +8,7 @@ async function sendMessage() {
   chatBox.innerHTML += `<div class="message user">${message}</div>`;
   input.value = "";
 
-  const response = await fetch("/api/chat", {
+  const response = await fetch("/chat", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message })
