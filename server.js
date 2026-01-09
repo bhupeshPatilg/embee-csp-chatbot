@@ -1,45 +1,45 @@
-import express from "express";
-import axios from "axios";
-
-const app = express();
-app.use(express.json());
-
-const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
-const apiKey = process.env.AZURE_OPENAI_KEY;
-const deployment = process.env.AZURE_OPENAI_DEPLOYMENT;
-
 app.post("/chat", async (req, res) => {
   try {
     const userMessage = req.body.message;
 
-    const response = await axios.post(
-      `${endpoint}/openai/responses?api-version=2025-04-01-preview`,
+    const response = await fetch(
+      process.env.AZURE_OPENAI_ENDPOINT,
       {
-        model: deployment,
-        input: [
-          {
-            role: "user",
-            content: [{ type: "text", text: userMessage }]
-          }
-        ]
-      },
-      {
+        method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "api-key": apiKey
-        }
+          "api-key": process.env.AZURE_OPENAI_KEY
+        },
+        body: JSON.stringify({
+          model: process.env.AZURE_OPENAI_DEPLOYMENT,
+          input: [
+            {
+              role: "user",
+              content: [
+                { type: "text", text: userMessage }
+              ]
+            }
+          ]
+        })
       }
     );
 
+    const data = await response.json();
+
+    if (!response.ok) {
+      console.error("Azure OpenAI error:", data);
+      return res.status(500).json({
+        error: "Azure OpenAI error",
+        details: data
+      });
+    }
+
     res.json({
-      reply: response.data.output_text || "No response"
+      reply: data.output?.[0]?.content?.[0]?.text ?? "No response"
     });
 
   } catch (err) {
-    console.error("Azure OpenAI ERROR:", err.response?.data || err.message);
-    res.status(500).json({ error: "Azure OpenAI error" });
+    console.error("Server error:", err);
+    res.status(500).json({ error: "Internal server error" });
   }
 });
-
-const port = process.env.PORT || 8080;
-app.listen(port, () => console.log(`Running on port ${port}`));
