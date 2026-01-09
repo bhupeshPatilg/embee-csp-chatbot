@@ -1,42 +1,45 @@
-const express = require("express");
-const axios = require("axios");
+import express from "express";
+import axios from "axios";
 
 const app = express();
 app.use(express.json());
-app.use(express.static("public"));
 
 const endpoint = process.env.AZURE_OPENAI_ENDPOINT;
 const apiKey = process.env.AZURE_OPENAI_KEY;
-const apiVersion = process.env.AZURE_OPENAI_API_VERSION;
-const model = process.env.AZURE_OPENAI_MODEL;
+const deployment = process.env.AZURE_OPENAI_DEPLOYMENT;
 
-app.post("/api/chat", async (req, res) => {
+app.post("/chat", async (req, res) => {
   try {
     const userMessage = req.body.message;
 
     const response = await axios.post(
-      `${endpoint}/openai/responses?api-version=${apiVersion}`,
+      `${endpoint}/openai/responses?api-version=2025-04-01-preview`,
       {
-        model: model,
-        input: userMessage
+        model: deployment,
+        input: [
+          {
+            role: "user",
+            content: [{ type: "text", text: userMessage }]
+          }
+        ]
       },
       {
         headers: {
-          "api-key": apiKey,
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
+          "api-key": apiKey
         }
       }
     );
 
     res.json({
-      reply: response.data.output_text
+      reply: response.data.output_text || "No response"
     });
 
-  } catch (error) {
-    console.error(error.response?.data || error.message);
-    res.status(500).json({ reply: "Azure OpenAI error" });
+  } catch (err) {
+    console.error("Azure OpenAI ERROR:", err.response?.data || err.message);
+    res.status(500).json({ error: "Azure OpenAI error" });
   }
 });
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 app.listen(port, () => console.log(`Running on port ${port}`));
