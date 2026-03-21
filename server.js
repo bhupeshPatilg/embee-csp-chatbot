@@ -10,20 +10,25 @@ app.use(express.json());
 // Serve frontend
 app.use(express.static(path.join(__dirname, ".")));
 
-// 🔴 YOUR AZURE OPENAI DETAILS
+// 🔴 AZURE OPENAI CONFIG (FIXED)
 const endpoint = "https://bhupe-mkeacfjd-eastus2.cognitiveservices.azure.com";
 const deployment = "gpt-4o_csp_chabot";
 const apiVersion = "2024-02-15-preview";
 
-// ⚠️ PASTE YOUR KEY BELOW (locally only, not in public repo)
+// 👉 PASTE YOUR KEY HERE
 const apiKey = "DvjfcnHEa9xX6EHPxrbcdbxRx8UbLzVzmVC1kjVm6Kfq1smbNTlDJQQJ99CAACHYHv6XJ3w3AAAAACOGPLWs";
 
+// Chat API
 app.post("/chat", async (req, res) => {
     try {
         const userMessage = req.body.message;
 
+        const url = `${endpoint}/openai/deployments/${deployment}/chat/completions?api-version=${apiVersion}`;
+
+        console.log("Calling URL:", url);
+
         const response = await axios.post(
-            `${endpoint}/openai/deployments/${deployment}/chat/completions?api-version=${apiVersion}`,
+            url,
             {
                 messages: [
                     { role: "system", content: "You are a helpful assistant." },
@@ -41,11 +46,12 @@ app.post("/chat", async (req, res) => {
         );
 
         const reply = response.data.choices[0].message.content;
+
         res.json({ reply });
 
     } catch (error) {
         console.error("ERROR:", error.response?.data || error.message);
-        res.status(500).send("Error calling Azure OpenAI");
+        res.status(500).send("Azure OpenAI error");
     }
 });
 
@@ -54,6 +60,6 @@ app.get("/", (req, res) => {
     res.sendFile(path.join(__dirname, "index.html"));
 });
 
-// Azure port handling
+// Azure Web App port
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT, () => console.log(`Running on port ${PORT}`));
