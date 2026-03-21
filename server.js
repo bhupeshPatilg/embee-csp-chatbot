@@ -13,7 +13,7 @@ app.use(express.static(path.join(__dirname, ".")));
 // 🔴 YOUR AZURE OPENAI DETAILS
 const endpoint = "https://bhupe-mkeacfjd-eastus2.cognitiveservices.azure.com";
 const deployment = "gpt-4o_csp_chabot";
-const apiVersion = "2025-01-01-preview";
+const apiVersion = "2024-02-15-preview";
 
 // ⚠️ PASTE YOUR KEY BELOW (locally only, not in public repo)
 const apiKey = "DvjfcnHEa9xX6EHPxrbcdbxRx8UbLzVzmVC1kjVm6Kfq1smbNTlDJQQJ99CAACHYHv6XJ3w3AAAAACOGPLWs";
