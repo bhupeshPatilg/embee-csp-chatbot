@@ -11,7 +11,7 @@ app.use(express.json());
 app.use(express.static(__dirname));
 
 // 🔴 CONFIG (DO NOT CHANGE FORMAT)
-const endpoint = "https://bhupe-mkeacfjd-eastus2.cognitiveservices.azure.com";
+const endpoint = "https://bhupe-mkeacfjd-eastus2.cognitiveservices.azure.com/openai/deployments/gpt-4o_csp_chabot/chat/completions?api-version=2025-01-01-preview";
 const deployment = "gpt-4o_csp_chabot";
 const apiVersion = "2024-02-15-preview";
 
