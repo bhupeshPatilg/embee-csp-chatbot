@@ -16,7 +16,7 @@ const deployment = "gpt-4o_csp_chabot";
 const apiVersion = "2024-02-15-preview";
 
 // 👉 PASTE YOUR KEY HERE
-const apiKey = "PASTE_YOUR_KEY_HERE";
+const apiKey = "DvjfcnHEa9xX6EHPxrbcdbxRx8UbLzVzmVC1kjVm6Kfq1smbNTlDJQQJ99CAACHYHv6XJ3w3AAAAACOGPLWs";
 
 app.post("/chat", async (req, res) => {
     try {
