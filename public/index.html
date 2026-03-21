@@ -1,25 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <title>Embee CSP Support Chatbot</title>
-  <link rel="stylesheet" href="style.css">
+    <title>Azure Chatbot</title>
 </head>
 <body>
 
-<div class="chat-container">
-  <div class="chat-header">
-    Embee CSP Support – Chatbot
-  </div>
+<h2>Azure OpenAI Chatbot</h2>
 
-  <div id="chat-box" class="chat-box"></div>
+<!-- Input -->
+<input id="msg" placeholder="Enter your prompt" style="width:400px; padding:8px;" />
+<button onclick="send()">Submit</button>
 
-  <div class="chat-input">
-    <input type="text" id="userInput" placeholder="Type your message..." />
-    <button onclick="sendMessage()">Send</button>
-  </div>
-</div>
+<br><br>
 
-<script src="script.js"></script>
+<!-- Response -->
+<h3>Response:</h3>
+<p id="response"></p>
+
+<script>
+async function send() {
+    const message = document.getElementById("msg").value;
+
+    if (!message) return;
+
+    document.getElementById("response").innerText = "Loading...";
+
+    const res = await fetch("/chat", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ message: message })
+    });
+
+    const data = await res.json();
+
+    document.getElementById("response").innerText = data.reply;
+}
+</script>
+
 </body>
 </html>
